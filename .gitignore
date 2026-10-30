@@ -26,3 +26,9 @@ AppSrc/LoginEncryptionKey.inc
 
 # Bloqueo del workspace mientras el Studio esta abierto
 IdeSrc/*.loc
+
+# Cache de definiciones de tablas SQL (se regenera sola)
+Data/*.cch
+
+# Archivos locales del Studio (cache y disposicion de ventanas)
+IdeSrc/
