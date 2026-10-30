@@ -1,0 +1,28 @@
+﻿# .gitignore - FutbolWebApp (DataFlex)
+
+# Generado al compilar / ejecutar
+Programs/*.exe
+Programs/*.dbg
+*.log
+AppSrc/*.dep
+AppSrc/*.prn
+AppSrc/*.prp
+AppSrc/*.err
+AppSrc/*.fld
+AppSrc/*.pbg
+AppSrc/*.pdp
+AppSrc/*.pkd
+
+# Datos de la base de datos embebida (cambian al usar la app)
+Data/*.dat
+Data/*.hdr
+Data/*.k[0-9]*
+Data/*.tag
+Data/*.vld
+
+# Credenciales y claves
+Data/DFConnId.ini
+AppSrc/LoginEncryptionKey.inc
+
+# Bloqueo del workspace mientras el Studio esta abierto
+IdeSrc/*.loc
