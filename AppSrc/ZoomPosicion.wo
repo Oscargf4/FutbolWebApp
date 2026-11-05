@@ -118,22 +118,28 @@ Object oZoomPosicion is a cWebView
         Send NavigateClose Self
     End_Procedure
 
-    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+       Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+        Boolean bHasRecord
+
+        // Titulos segun haya una posicion cargada o se este creando una nueva
+        Get HasRecord of oposicion_DD to bHasRecord
+        If (bHasRecord) Begin
+            Send SetHeaderCaption (Trim(posicion.Nombre))
+            Send SetBreadcrumbCaption (Trim(posicion.Nombre))
+        End
+        Else Begin
+            Send SetHeaderCaption "Nueva posicion"
+            Send SetBreadcrumbCaption "Nueva"
+        End
+
         Case Begin
             Case (NavigateData.eNavigateType = nfFromMain)
-                // If from main, this is a propbably a main file Select to Zoom.
                 Case Break
-
             Case (NavigateData.eNavigateType = nfFromParent)
-                // If from parent, this is a constrained drill down.
                 Case Break
-
             Case (NavigateData.eNavigateType = nfFromChild)
-                // If from child, this is a probably a parent Zoom from a Zoom.
                 Case Break
-
             Case Else // must be nfUndefined
-
         Case End
 
         Send SetActionButtons

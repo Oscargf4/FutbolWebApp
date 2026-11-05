@@ -8,6 +8,8 @@ Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebForm.pkg
 Use SelectEquipo.wo
+Use cWebButton.pkg
+Use SelectPosicion.wo
 
 Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
@@ -26,15 +28,15 @@ Object oZoomJugador is a cWebView
     End_Object 
 
     Object oequipo_DD is a cequipoDataDictionary
-        Set DDO_Server To oliga_DD
+        Set DDO_Server to oliga_DD
     End_Object 
 
     Object ojugador_DD is a cjugadorDataDictionary
-        Set DDO_Server To oequipo_DD
+        Set DDO_Server to oequipo_DD
     End_Object 
 
-    Set Main_DD To ojugador_DD
-    Set Server  To ojugador_DD
+    Set Main_DD to ojugador_DD
+    Set Server  to ojugador_DD
 
 
     Object oWebMainPanel is a cWebPanel
@@ -79,6 +81,19 @@ Object oZoomJugador is a cWebView
                 Send NavigatePath
             End_Procedure
         End_Object 
+
+        // Navegacion from undefined: jugador y posicion no tienen relacion directa entre sus DD
+        Object oVerPosicionesBtn is a cWebButton
+            Set psCaption to "Ver posiciones"
+            Set piColumnSpan to 4
+            Set piColumnIndex to 0
+
+            WebRegisterPath ntNavigateForward oSelectPosicion
+
+            Procedure OnClick
+                Send NavigateForwardCustom of oSelectPosicion Self
+            End_Procedure
+        End_Object
     End_Object 
 
     Object oActionGroup is a cWebMenuGroup
@@ -159,27 +174,32 @@ Object oZoomJugador is a cWebView
     Procedure OnViewDeleted Handle hoDDO
         Send NavigateClose Self
     End_Procedure
+    
+        Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+        Boolean bHasRecord
 
-    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+        // Titulos segun haya un jugador cargado o se este creando uno nuevo
+        Get HasRecord of ojugador_DD to bHasRecord
+        If (bHasRecord) Begin
+            Send SetHeaderCaption ("Jugador " + Trim(jugador.Nombre))
+            Send SetBreadcrumbCaption (Trim(jugador.Nombre) + " " + Trim(jugador.Apellido))
+        End
+        Else Begin
+            Send SetHeaderCaption "Nuevo jugador"
+            Send SetBreadcrumbCaption "Nuevo"
+        End
+
         Case Begin
             Case (NavigateData.eNavigateType = nfFromMain)
-                // If from main, this is a propbably a main file Select to Zoom.
                 Case Break
-
             Case (NavigateData.eNavigateType = nfFromParent)
-                // If from parent, this is a constrained drill down.
                 Case Break
-
             Case (NavigateData.eNavigateType = nfFromChild)
-                // If from child, this is a probably a parent Zoom from a Zoom.
                 Case Break
-
             Case Else // must be nfUndefined
-
         Case End
 
         Send SetActionButtons
 
     End_Procedure
-
-End_Object 
+End_Object
