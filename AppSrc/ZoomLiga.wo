@@ -7,8 +7,13 @@ Use cWebPanel.pkg
 Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebForm.pkg
+Use cWebButton.pkg
 
 Use cligaDataDictionary.dd
+
+// Se declara con Register_Object (no con Use) para evitar el Use circular
+// SelectEquipo -> ZoomEquipo -> SelectLiga -> ZoomLiga
+Register_Object oSelectEquipo
 
 Object oZoomLiga is a cWebView
     Set piColumnCount to 12
@@ -22,8 +27,8 @@ Object oZoomLiga is a cWebView
     Object oliga_DD is a cligaDataDictionary
     End_Object 
 
-    Set Main_DD To oliga_DD
-    Set Server  To oliga_DD
+    Set Main_DD to oliga_DD
+    Set Server  to oliga_DD
 
 
     Object oWebMainPanel is a cWebPanel
@@ -61,6 +66,26 @@ Object oZoomLiga is a cWebView
             Set peLabelPosition to lpTop
             Set psLabel to "EquiposMax"
         End_Object 
+
+        // Navegacion from parent: de una liga concreta a sus equipos.
+        // El framework detecta que liga es padre de equipo (nfFromParent)
+        // y filtra automaticamente el Select de equipo por esta liga.
+        Object oVerEquiposBtn is a cWebButton
+            Set psCaption to "Ver equipos"
+            Set piColumnSpan to 4
+            Set piColumnIndex to 0
+
+            WebRegisterPath ntNavigateForward oSelectEquipo
+
+            Procedure OnClick
+                Send NavigateForward of oSelectEquipo Self
+            End_Procedure
+
+            // Antes de viajar al hijo, guarda la liga para mantener la coherencia de los datos
+            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
+                Move True to NavigateData.bSaveBeforeNavigate
+            End_Procedure
+        End_Object
     End_Object 
 
     Object oActionGroup is a cWebMenuGroup
@@ -164,4 +189,4 @@ Object oZoomLiga is a cWebView
 
     End_Procedure
 
-End_Object 
+End_Object
