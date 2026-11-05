@@ -8,8 +8,11 @@ Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebForm.pkg
 Use cWebButton.pkg
+Use cWebList.pkg
+Use cWebColumn.pkg
 
 Use cligaDataDictionary.dd
+Use cequipoDataDictionary.dd
 
 // Se declara con Register_Object (no con Use) para evitar el Use circular
 // SelectEquipo -> ZoomEquipo -> SelectLiga -> ZoomLiga
@@ -26,6 +29,13 @@ Object oZoomLiga is a cWebView
 
     Object oliga_DD is a cligaDataDictionary
     End_Object 
+
+    // DD hijo para la lista de equipos de esta liga (cabecera-detalle):
+    // su servidor es el DD de liga y solo carga los equipos de la liga actual
+    Object oequipo_DD is a cequipoDataDictionary
+        Set DDO_Server to oliga_DD
+        Set Constrain_File to liga.File_Number
+    End_Object
 
     Set Main_DD to oliga_DD
     Set Server  to oliga_DD
@@ -85,6 +95,21 @@ Object oZoomLiga is a cWebView
             Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
                 Move True to NavigateData.bSaveBeforeNavigate
             End_Procedure
+        End_Object
+
+        // From parent dentro de la propia vista: lista con los equipos de esta liga.
+        // Usa el DD hijo (oequipo_DD), no el principal de la vista.
+        Object oEquiposList is a cWebList
+            Set Server to oequipo_DD
+            Set piColumnSpan to 12
+            Set piColumnIndex to 0
+            Set piHeight to 200
+
+            Object oListEquipoNombre is a cWebColumn
+                Entry_Item equipo.Nombre
+                Set psCaption to "Equipos de esta liga"
+                Set piWidth to 100
+            End_Object
         End_Object
     End_Object 
 
