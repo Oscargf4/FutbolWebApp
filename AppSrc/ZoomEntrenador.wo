@@ -160,7 +160,20 @@ Object oZoomEntrenador is a cWebView
         Send NavigateClose Self
     End_Procedure
 
-    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+       Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+        Boolean bHasRecord
+
+        // Titulos segun haya un entrenador cargado o se este creando uno nuevo
+        Get HasRecord of oentrenador_DD to bHasRecord
+        If (bHasRecord) Begin
+            Send SetHeaderCaption ("Entrenador " + Trim(entrenador.Nombre))
+            Send SetBreadcrumbCaption (Trim(entrenador.Nombre) + " " + Trim(entrenador.Apellido))
+        End
+        Else Begin
+            Send SetHeaderCaption "Nuevo entrenador"
+            Send SetBreadcrumbCaption "Nuevo"
+        End
+
         Case Begin
             Case (NavigateData.eNavigateType = nfFromMain)
                 // If from main, this is a propbably a main file Select to Zoom.
