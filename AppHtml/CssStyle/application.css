@@ -1,0 +1,49 @@
+/* ==========================================================
+   FutbolWebApp - estilos propios (Sprint 3)
+   Este archivo se carga despues del tema (Df_Flat_Touch),
+   asi que personaliza sin tocar los archivos del tema.
+   Todos los selectores empiezan por #OWEBAPP para tener
+   prioridad sobre el tema sin usar !important.
+   ========================================================== */
+
+/* ---------- Tiles del Dashboard ---------- */
+
+/* Color de cada seccion (variable CSS que heredan los hijos) */
+#OWEBAPP .TileBienvenida   { --tile-color: #1B5E20; }  /* verde cesped */
+#OWEBAPP .TileLigas        { --tile-color: #0D47A1; }  /* azul */
+#OWEBAPP .TileEquipos      { --tile-color: #B71C1C; }  /* rojo */
+#OWEBAPP .TileJugadores    { --tile-color: #2E7D32; }  /* verde */
+#OWEBAPP .TileEntrenadores { --tile-color: #E65100; }  /* naranja */
+#OWEBAPP .TilePosiciones   { --tile-color: #4A148C; }  /* morado */
+
+/* El tema pinta el tile en su WebCon_Sizer (.Tile .WebCon_Sizer):
+   sobrescribimos solo ese div, respetando su margen de 5px */
+#OWEBAPP .TileFutbol .WebHtml_Wrp > .WebCon_Sizer {
+    background: var(--tile-color);
+    color: #FFFFFF;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+    transition: filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Textos */
+#OWEBAPP .TileFutbol .Tile_Title {
+    color: #FFFFFF;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+#OWEBAPP .TileFutbol .Tile_Subtitle {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* Efecto al pasar el raton (no en Bienvenido, que no es clicable) */
+#OWEBAPP .TileFutbol:not(.TileBienvenida):hover .WebHtml_Wrp > .WebCon_Sizer {
+    filter: brightness(1.15);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+/* Bienvenido no navega: cursor normal */
+#OWEBAPP .TileBienvenida .WebHtml_Wrp > .WebCon_Sizer {
+    cursor: default;
+}
