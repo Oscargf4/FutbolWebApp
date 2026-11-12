@@ -58,12 +58,13 @@ Object oZoomLiga is a cWebView
             Set piColumnSpan to 8
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
-            Set psLabel to "Pais"
+            Set psLabel to "País"
         End_Object 
 
+        // Equipos y Max. equipos en la misma linea (3 + 3 columnas)
         Object oligaEquipos is a cWebForm
             Entry_Item liga.Equipos
-            Set piColumnSpan to 2
+            Set piColumnSpan to 3
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
             Set psLabel to "Equipos"
@@ -71,10 +72,10 @@ Object oZoomLiga is a cWebView
 
         Object oligaEquiposMax is a cWebForm
             Entry_Item liga.EquiposMax
-            Set piColumnSpan to 2
-            Set piColumnIndex to 0
+            Set piColumnSpan to 3
+            Set piColumnIndex to 3
             Set peLabelPosition to lpTop
-            Set psLabel to "EquiposMax"
+            Set psLabel to "Máx. equipos"
         End_Object 
 
         // Navegacion from parent: de una liga concreta a sus equipos.
@@ -192,7 +193,7 @@ Object oZoomLiga is a cWebView
         Send NavigateClose Self
     End_Procedure
 
-       Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
         Boolean bHasRecord
 
         // Titulos segun haya una liga cargada o se este creando una nueva
@@ -205,6 +206,10 @@ Object oZoomLiga is a cWebView
             Send SetHeaderCaption "Nueva liga"
             Send SetBreadcrumbCaption "Nueva"
         End
+
+        // En una liga nueva todavia no hay equipos: se ocultan el boton y la lista
+        WebSet pbRender of oVerEquiposBtn to bHasRecord
+        WebSet pbRender of oEquiposList to bHasRecord
 
         Case Begin
             Case (NavigateData.eNavigateType = nfFromMain)
