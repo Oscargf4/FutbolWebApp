@@ -128,7 +128,7 @@ Object oZoomPosicion is a cWebView
             Send SetBreadcrumbCaption (Trim(posicion.Nombre))
         End
         Else Begin
-            Send SetHeaderCaption "Nueva posicion"
+            Send SetHeaderCaption "Nueva posición"
             Send SetBreadcrumbCaption "Nueva"
         End
 
