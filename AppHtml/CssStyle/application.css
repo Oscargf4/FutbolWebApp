@@ -47,3 +47,11 @@
 #OWEBAPP .TileBienvenida .WebHtml_Wrp > .WebCon_Sizer {
     cursor: default;
 }
+
+/* ---------- Color principal de la aplicacion ---------- */
+/* El tema define sus colores con variables CSS (:root). Redefinirlas en
+   #OWEBAPP (el body) cambia el color en toda la app sin tocar el tema. */
+#OWEBAPP {
+    --df-MainRegular: #1B5E20;   /* verde cesped (antes azul #0072C6) */
+    --df-MainDark:    #0F3D14;   /* verde oscuro (antes #005899)      */
+}
