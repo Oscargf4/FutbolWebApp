@@ -26,6 +26,9 @@ Class cligaDataDictionary is a DataDictionary
         Set Field_Option Field liga.Pais DD_REQUIRED to True
         Set Field_Option Field liga.EquiposMax DD_REQUIRED to True
 
+      // --- Equipos lo mantiene el sistema (Update/Backout de equipo): no editable ---
+        Set Field_Option Field liga.Equipos DD_NOENTER to True
+
         // --- El nombre no se puede cambiar una vez creado el registro ---
         Set Field_Option Field liga.Nombre DD_COMMIT to True
 
