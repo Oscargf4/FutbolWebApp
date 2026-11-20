@@ -1,8 +1,15 @@
 ﻿Use DataDict.pkg
+Use ddvaltbl.pkg
 
 Open jugador
 Open jugadorposicion
 Open equipo
+
+// Tabla de validacion de nacionalidades: lee de CodeMast los codigos
+// del tipo NACION (definido en CodeType). Va fuera de la clase.
+Object oNacionalidadJugadorTable is a CodeValidationTable
+    Set Type_Value to "NACION"
+End_Object
 
 Class cjugadorDataDictionary is a DataDictionary
 
@@ -30,6 +37,9 @@ Class cjugadorDataDictionary is a DataDictionary
         // --- Nombre y apellido no se pueden cambiar una vez creado el registro ---
         Set Field_Option Field jugador.Nombre DD_COMMIT to True
         Set Field_Option Field jugador.Apellido DD_COMMIT to True
+
+        // --- Validacion: la nacionalidad solo puede ser una de CodeMast (tipo NACION) ---
+        Set Field_Value_Table Field jugador.Nacionalidad to oNacionalidadJugadorTable
 
     End_Procedure
 

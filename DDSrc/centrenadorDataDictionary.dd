@@ -1,7 +1,14 @@
 ﻿Use DataDict.pkg
+Use ddvaltbl.pkg
 
 Open entrenador
 Open equipo
+
+// Tabla de validacion de nacionalidades: lee de CodeMast los codigos
+// del tipo NACION (definido en CodeType). Va fuera de la clase.
+Object oNacionalidadEntrenadorTable is a CodeValidationTable
+    Set Type_Value to "NACION"
+End_Object
 
 Class centrenadorDataDictionary is a DataDictionary
 
@@ -33,20 +40,16 @@ Class centrenadorDataDictionary is a DataDictionary
         // Si se borra su equipo, el entrenador no se borra: se queda sin equipo
         Set CascadeDeleteNull equipo.File_Number to True
 
+        // --- Validacion: la nacionalidad solo puede ser una de CodeMast (tipo NACION) ---
+        Set Field_Value_Table Field entrenador.Nacionalidad to oNacionalidadEntrenadorTable
+
     End_Procedure
 
     Function Field_CommitNoEnterOnIndex Integer iField Returns Boolean
         Function_Return True
     End_Function
 
-    // ------------------------------------------------------------------
-    // NULL en la clave foranea
-    // DataFlex no tiene NULL: sin equipo, EquipoID valdria 0. Como no existe
-    // ningun equipo con ID 0, MySQL rechazaria el guardado (FK) y ademas el
-    // indice UNIQUE de EquipoID chocaria con dos entrenadores sin equipo.
-    // Justo antes de escribir el registro (ya hecho el attach), si no hay
-    // equipo se marca la columna como NULL para que se envie NULL y no 0.
-    // ------------------------------------------------------------------
+    // NULL en la clave foranea: si no hay equipo, enviar NULL y no 0
     Procedure Save_Main_File
         Integer iCampo
         If (entrenador.EquipoID = 0) Begin
