@@ -4,7 +4,7 @@ Open entrenador
 Open equipo
 
 Class centrenadorDataDictionary is a DataDictionary
-    
+
     Procedure Construct_Object
         Forward Send Construct_Object
         Set Main_File to entrenador.File_Number
@@ -16,6 +16,22 @@ Class centrenadorDataDictionary is a DataDictionary
         Set Foreign_Field_Option DD_INDEXFIELD DD_NOPUT to True
         Set Foreign_Field_Option DD_DEFAULT DD_DISPLAYONLY to True
 
+        // --- Clave primaria protegida ---
+        Set Key_Field_State Field entrenador.ID to True
+        Set Protect_Key_State to True
+
+        // --- Campos NOT NULL en la BD: obligatorios ---
+        Set Field_Option Field entrenador.Nombre DD_REQUIRED to True
+        Set Field_Option Field entrenador.Apellido DD_REQUIRED to True
+
+        // --- Nombre y apellido no se pueden cambiar una vez creado el registro ---
+        Set Field_Option Field entrenador.Nombre DD_COMMIT to True
+        Set Field_Option Field entrenador.Apellido DD_COMMIT to True
+
     End_Procedure
+
+    Function Field_CommitNoEnterOnIndex Integer iField Returns Boolean
+        Function_Return True
+    End_Function
 
 End_Class
