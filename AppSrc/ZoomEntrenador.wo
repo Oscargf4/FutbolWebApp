@@ -8,6 +8,7 @@ Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebForm.pkg
 Use SelectEquipo.wo
+Use cWebButton.pkg
 
 Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
@@ -65,7 +66,7 @@ Object oZoomEntrenador is a cWebView
             Set psLabel to "Nacionalidad"
         End_Object 
 
-        Object oequipoNombre is a cWebForm
+                Object oequipoNombre is a cWebForm
             Entry_Item equipo.Nombre
             Set piColumnSpan to 12
             Set piColumnIndex to 0
@@ -79,7 +80,21 @@ Object oZoomEntrenador is a cWebView
                 Send NavigatePath
             End_Procedure
         End_Object 
-    End_Object 
+
+        // NULL: deja al entrenador sin equipo.
+        // Request_ClearBindingTable vacia SOLO el DD del equipo (el padre),
+        // no el entrenador; despues se guarda y el DD escribe NULL en la FK.
+        Object oDespedirBtn is a cWebButton
+            Set psCaption to "Despedir"
+            Set piColumnSpan to 4
+            Set piColumnIndex to 0
+
+            Procedure OnClick
+                Send Request_ClearBindingTable of oequipoNombre
+                Send Request_Save
+            End_Procedure
+        End_Object
+    End_Object
 
     Object oActionGroup is a cWebMenuGroup
 
