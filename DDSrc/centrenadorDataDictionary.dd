@@ -1,10 +1,17 @@
 ﻿Use DataDict.pkg
+Use ddvaltbl.pkg
 
 Open entrenador
 Open equipo
 
+// Tabla de validacion de nacionalidades: lee de CodeMast los codigos
+// del tipo NACION (definido en CodeType). Va fuera de la clase.
+Object oNacionalidadEntrenadorTable is a CodeValidationTable
+    Set Type_Value to "NACION"
+End_Object
+
 Class centrenadorDataDictionary is a DataDictionary
-    
+
     Procedure Construct_Object
         Forward Send Construct_Object
         Set Main_File to entrenador.File_Number
@@ -16,6 +23,40 @@ Class centrenadorDataDictionary is a DataDictionary
         Set Foreign_Field_Option DD_INDEXFIELD DD_NOPUT to True
         Set Foreign_Field_Option DD_DEFAULT DD_DISPLAYONLY to True
 
+        // --- Clave primaria protegida ---
+        Set Key_Field_State Field entrenador.ID to True
+        Set Protect_Key_State to True
+
+        // --- Campos NOT NULL en la BD: obligatorios ---
+        Set Field_Option Field entrenador.Nombre DD_REQUIRED to True
+        Set Field_Option Field entrenador.Apellido DD_REQUIRED to True
+
+        // --- Nombre y apellido no se pueden cambiar una vez creado el registro ---
+        Set Field_Option Field entrenador.Nombre DD_COMMIT to True
+        Set Field_Option Field entrenador.Apellido DD_COMMIT to True
+
+        // --- NULL: un entrenador puede quedarse sin equipo ---
+        Set ParentNullAllowed equipo.File_Number to True
+        // Si se borra su equipo, el entrenador no se borra: se queda sin equipo
+        Set CascadeDeleteNull equipo.File_Number to True
+
+        // --- Validacion: la nacionalidad solo puede ser una de CodeMast (tipo NACION) ---
+        Set Field_Value_Table Field entrenador.Nacionalidad to oNacionalidadEntrenadorTable
+
+    End_Procedure
+
+    Function Field_CommitNoEnterOnIndex Integer iField Returns Boolean
+        Function_Return True
+    End_Function
+
+    // NULL en la clave foranea: si no hay equipo, enviar NULL y no 0
+    Procedure Save_Main_File
+        Integer iCampo
+        If (entrenador.EquipoID = 0) Begin
+            Get_FieldNumber entrenador.EquipoID to iCampo
+            Set_Attribute DF_FIELD_IS_NULL of entrenador.File_Number iCampo to True
+        End
+        Forward Send Save_Main_File
     End_Procedure
 
 End_Class

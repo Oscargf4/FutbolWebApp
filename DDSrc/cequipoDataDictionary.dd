@@ -6,7 +6,7 @@ Open jugador
 Open liga
 
 Class cequipoDataDictionary is a DataDictionary
-    
+
     Procedure Construct_Object
         Forward Send Construct_Object
         Set Main_File to equipo.File_Number
@@ -21,6 +21,52 @@ Class cequipoDataDictionary is a DataDictionary
         Set Foreign_Field_Option DD_INDEXFIELD DD_NOPUT to True
         Set Foreign_Field_Option DD_DEFAULT DD_DISPLAYONLY to True
 
+        // --- Clave primaria protegida ---
+        Set Key_Field_State Field equipo.ID to True
+        Set Protect_Key_State to True
+
+        // --- Campos NOT NULL en la BD: obligatorios ---
+        // (LigaID no: la liga obligatoria ya la controla la relacion con DD_FINDREQ)
+        Set Field_Option Field equipo.Nombre DD_REQUIRED to True
+
+        // --- El nombre no se puede cambiar una vez creado el registro ---
+        Set Field_Option Field equipo.Nombre DD_COMMIT to True
+
     End_Procedure
+
+    Function Field_CommitNoEnterOnIndex Integer iField Returns Boolean
+        Function_Return True
+    End_Function
+
+    // ------------------------------------------------------------------
+    // Contador de equipos de la liga (patron Update / Backout)
+    // Dentro de estos eventos se trabaja con el BUFFER DE LA TABLA (liga.Campo)
+    // ------------------------------------------------------------------
+
+    // Backout: quita el efecto de los valores ANTIGUOS.
+    // En este momento el buffer de liga tiene la liga ANTIGUA del equipo.
+    Procedure Backout
+        Forward Send Backout
+        Move (liga.Equipos - 1) to liga.Equipos
+    End_Procedure
+
+    // Update: anade el efecto de los valores NUEVOS.
+    // En este momento el buffer de liga tiene la liga NUEVA del equipo.
+    Procedure Update
+        Forward Send Update
+        Move (liga.Equipos + 1) to liga.Equipos
+    End_Procedure
+
+    // Validate_Save: ultima comprobacion, con las tablas bloqueadas.
+    // Si la liga nueva supera su maximo, se cancela todo el guardado (rollback).
+    Function Validate_Save Returns Integer
+        Integer iError
+        Forward Get Validate_Save to iError
+        If (iError = 0 and liga.Equipos > liga.EquiposMax) Begin
+            Send UserError "La liga ya tiene el máximo de equipos permitido."
+            Move 1 to iError
+        End
+        Function_Return iError
+    End_Function
 
 End_Class
